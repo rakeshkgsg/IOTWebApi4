@@ -17,10 +17,10 @@ namespace IotWebApi.Services
         UserDto? GetById(string id);
 
         UserDto? GetByUsername(string username);
-        bool Create(UserDto u, string password);
+        string Create(UserDto u, string password);
         bool Remove(string id);
         bool RemoveByUsername(string username);
-        bool Update(UserDto u);
+        string Update(UserDto u);
     }
 
     public class UserService : IUserService
@@ -76,7 +76,7 @@ namespace IotWebApi.Services
                 query = operation.PerformFiltering(query, dm.Where, dm.Where[0].Condition);
             if (dm.Search != null)
                 query = operation.PerformSearching(query, dm.Search);
-            int count = query.Cast<object>().Count();
+            int count = query.Count();
             if (dm.Sorted != null)
                 query = operation.PerformSorting(query, dm.Sorted);
             if (dm.Select != null)
@@ -104,7 +104,7 @@ namespace IotWebApi.Services
         }
 
 
-        public bool Create(UserDto u, string password = null)
+        public string Create(UserDto u, string password = null)
         {
             var user = _client.GetCollection<UserEto>().Find(x => x.Username == u.Username).FirstOrDefault();
             if (user == null)
@@ -116,9 +116,9 @@ namespace IotWebApi.Services
                 }
                 userEto.Password = password;
                 _client.GetCollection<UserEto>().InsertOne(userEto);
-                return true;
+                return userEto.Id;
             }
-            return false;
+            return "";
         }
 
         public bool Remove (string id)
@@ -137,7 +137,7 @@ namespace IotWebApi.Services
             return false;
         }
 
-        public bool Update (UserDto u)
+        public string Update (UserDto u)
         {
             UserEto user = _client.GetCollection<UserEto>().Find(x => x.Username == u.Username).FirstOrDefault();
             if (user != null)
@@ -145,9 +145,9 @@ namespace IotWebApi.Services
                 user.FirstName = u.FirstName; user.LastName = u.LastName;
                 user.Email = u.Email; user.Address = u.Address;
                 _client.GetCollection<UserEto>().ReplaceOne(x => x.Id == user.Id, user);
-                return true;
+                return user.Id;
             }
-            return false;
+            return "";
 
         }
     }

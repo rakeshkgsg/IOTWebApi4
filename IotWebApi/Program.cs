@@ -45,12 +45,11 @@ if (app.Environment.IsDevelopment())
 // custom jwt auth middleware
 app.UseMiddleware<JwtMiddleware>();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // app.UseAuthorization();
 
 app.MapControllers();
-
 SetupBase.InstallOrUpgrade(app.Services);
 
 app.Run();

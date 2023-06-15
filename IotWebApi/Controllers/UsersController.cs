@@ -24,6 +24,14 @@ namespace IotWebApi.Controllers
             return Ok(users);
         }
 
+        [HttpPost("plist")]
+        public IActionResult PostAll()
+        {
+            var users = _userService.GetAll();
+            return Ok(users);
+        }
+
+
         // to be used with syncfusion datamanager
         [HttpPost("read")]
         public ActionResult Read(DataManagerRequest dm)
@@ -49,32 +57,32 @@ namespace IotWebApi.Controllers
         public IActionResult Create(UserDto u, string password)
         {
             var res = _userService.Create(u, password);
-            if (res) return Ok();
-            return BadRequest();
+            if (!string.IsNullOrEmpty(res)) return Ok(res);
+            return BadRequest("Error");
         }
 
         [HttpDelete]
         public IActionResult Remove(string id)
         {
             var res = _userService.Remove(id);
-            if (res) return Ok();
-            return BadRequest();
+            if (res) return Ok(res);
+            return BadRequest("Error");
         }
 
         [HttpDelete("username")]
         public IActionResult RemoveByUsername(string username)
         {
             var res = _userService.RemoveByUsername(username);
-            if (res) return Ok();
-            return BadRequest();
+            if (res) return Ok(res);
+            return BadRequest("Error");
         }
 
         [HttpPut]
         public IActionResult Update(UserDto u)
         {
             var res = _userService.Update(u);
-            if (res) return Ok();
-            return BadRequest();
+            if (!string.IsNullOrEmpty(res)) return Ok(res);
+            return BadRequest("Error");
         }
     }
 }
